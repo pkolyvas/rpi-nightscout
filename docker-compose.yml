@@ -20,8 +20,8 @@ services:
       - "1337:1337"
     depends_on:
       - mongo
-    volumes:
-      - /home/pi/docker/rpi-nightscout:/var/opt/ssl/:ro
+    # volumes:
+    #   - /home/pi/docker/rpi-nightscout:/var/opt/ssl/:ro
     restart: always
   mongo:
     image: mongo:4.4.9
