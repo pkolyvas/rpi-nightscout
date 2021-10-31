@@ -21,7 +21,7 @@ USER node
 
 # install the application
 RUN git clone https://github.com/nightscout/cgm-remote-monitor.git . && \
-    git checkout tags/14.2.2 && \
+    git checkout tags/14.4.2 && \
     npm install && \
     npm run postinstall && \
     npm run env && \
