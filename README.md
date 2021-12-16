@@ -5,60 +5,25 @@ This images offers a node.js webserver containing the Nightscout Application Ver
 This image needs arm64 and therefore e.g. the ubuntu server os. This is because mongo 4.x is only
 available for arm64 - not armv7(32bit) anymore.
 
-Have a look how to run this image using kubernetes (k3s) on a raspberry pi.
-I've written a tutorial for the complete setup process:
-https://h3rmanns.medium.com/creating-a-k3s-raspberry-pi-cluster-with-k3sup-to-fire-up-a-nightscout-backend-service-based-on-a-27c1f5727e5b
+# Docker Images
+Docker images available here:
+https://hub.docker.com/r/eyeoh/rpi-nightscout
 
-# Github Repo
-The image is created by using the Github Repository located here:
+# Provenance
+This is a fork of:
 https://github.com/dhermanns/rpi-nightscout
 
 # Usage
-## Install Hypriot OS on your Raspberry
-First of all, you need a Raspberry Pi 2,3 or 4. Install an operating system that supports
-the docker runtime. E.g. follow the instructions to install the nice hypriot os:
-http://blog.hypriot.com/getting-started-with-docker-on-your-arm-device/
+This image requires ARM64-based hardware (not tested on Apple Silicon). 
 
-## Install Docker-Compose
-Afterwards you should have a running Raspberry which is able to start Docker Container.
-What we additionally need is the docker-compose component. Using this tool we are able to fire up
-all that is needed to start Nightscout plus Mongo with just two command lines.
-
-The steps needed to install docker-compose are documented here:
-http://blog.hypriot.com/post/docker-compose-nodejs-haproxy
-
-The short story is - simply execute this command:
-```
-$ sudo su -
-$ curl -L https://github.com/hypriot/compose/releases/download/1.2.0-raspbian/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
-chmod +x /usr/local/bin/docker-compose
-```
-
-## Checkout this repository to your Raspberry Pi
-Clone this repository to your Raspberry. Execute
-```
-git clone https://github.com/dhermanns/rpi-nightscout
-```
-The above git-repository contains the Docker file to create a docker image and a
-docker-compose script to launch rpi-nightscout referencing the
-necessary rpi-mongo database image.
-
-## Modify your API Key
-It is recommended that you add your own API Key. This key has to be entered into your Uploader Application.
-If you are using a Medtronic Pump, than you are using [this](https://github.com/arbox0/MedtronicUploader) application.
-You can edit your API Key by using e.g. nano editor
-```
-cd rpi-nightscout
-nano docker-compose.yml
-```
-Remember that you have to provide a secret key that has to have at least 12 characters!
+Please follow the instructions available on the Nightscout site.
 
 ## Modify your Nightscout Settings
 To modify your nightscout configuration, you can simply modify the environment settings in your docker-compose.yml file.
 E.g. to modify the default alarm ranges change the values of BG_HIGH, BG_LOW, etc.:
 ```
 nightscout:
-  image: dhermanns/rpi-nightscout:latest
+  image: eyeoh/rpi-nightscout:14.2.5
   environment:
     TZ: Europe/Berlin
     MONGO_CONNECTION: mongodb://mongo:27017/nightscout
@@ -96,29 +61,6 @@ mongo:
 ```
 
 This way you should be able to use other tools that would like direct access.
-
-## Run on Raspberry Pi with piOS
-piOS (formerly known as raspbian) is based on armv7 (32bit). Since nightscout 14.2.2 needs a mongo-db 4.x, arm64 is required.
-But you can run an older nightscout 14.0.6 an piOS. docker-compose.armv7.yml demonstrates this:
-
-```
-docker-compose -f docker-compose.armv7.yml up -d
-```
-
-## Configure your Uploader
-To upload your CGM Data to your Nightscout system, this image is designed to use the REST-API Upload
-only! The internal Mongo Port is not exposed by default.
-
-So let your Uploader point to the REST API located here:
-```
-<mysecretapikey>@http://<name-of-my-raspberry>:1337/api/v1/
-```
-And enter your Secret API Key that you have configured in your docker-compose.yml file.
-
-!!!**WARNING** - the format is not documented on the arbox0 site and the format documented for the dexcom version of the uploader differs from the format above. But what's working for me with the arbox0 uploader is exactly the format above!!!
-
-Congratulations - you should have a complete Nightscout System to monitor your diabetes data
-based on your local Raspi!
 
 ## Activate HTTPS
 If you would like to use e.g. the MyBG Apple Watch App, you will have to activate HTTPS for the nightscout cgm remote monitor.
